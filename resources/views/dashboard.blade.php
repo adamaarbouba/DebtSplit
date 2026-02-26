@@ -11,9 +11,24 @@
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center">
                         <span>{{ __('Welcome ') . auth()->user()->name }}</span>
+
+                        <a href="{{ route('colocation.index') }}"
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-150">
+                            {{ __('Colocations History') }}
+                        </a>
                     </div>
                 </div>
+                <div class="p-6 text-gray-900">
 
+                    @if ($activeColocation)
+                        <a href="{{ route('colocation.show', $activeColocation->id) }}"
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+                            {{ __('Current Colocation') }}
+                        </a>
+                    @else
+                        <p class="text-gray-500 italic">No active colocation found.</p>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
