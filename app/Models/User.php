@@ -51,6 +51,8 @@ class User extends Authenticatable
     }
     public function colocations()
     {
-        return $this->belongsToMany(Colocation::class)->withPivot('joined_at', 'left_at', 'sold', 'debt')->withTimestamps();
+        // You MUST add ->withPivot() so Laravel knows to grab those extra columns
+        return $this->belongsToMany(Colocation::class, 'colocation_user')
+            ->withPivot('role', 'debt', 'sold', 'left_at', 'joined_at');
     }
 }

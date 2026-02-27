@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    // database/seeders/DatabaseSeeder.php
     public function run(): void
     {
         $adminRole = Role::firstOrCreate(['title' => 'admin']);
@@ -28,19 +27,22 @@ class DatabaseSeeder extends Seeder
             'role_id' => $adminRole->id,
         ]);
 
-        User::factory(10)
-            ->hasAttached(
-                Colocation::factory()
-                    ->count(2)
-                    ->has(Category::factory()->count(3)),
-                [
-                    'role' => 'member',
+        User::factory(10)->create(['role_id' => $userRole->id])->each(function ($user) {
+
+            $colocations = Colocation::factory(2)
+                ->has(Category::factory()->count(3))
+                ->create([
+                    'owner_id' => $user->id,
+                ]);
+
+            foreach ($colocations as $colocation) {
+                $colocation->users()->attach($user->id, [
+                    'role' => 'Owner',
                     'debt' => rand(0, 100),
-                    'joined_at' => now()
-                ]
-            )
-            ->create([
-                'role_id' => $userRole->id
-            ]);
+                    'joined_at' => now(),
+                    'sold' => 0,
+                ]);
+            }
+        });
     }
 }

@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('expense__users', function (Blueprint $table) {
             $table->id();
-            $table->float('amount',2);
-            $table->enum('status',['PAID','UNPAID']);
+            $table->float('amount', 2);
+            $table->enum('status', ['PAID', 'UNPAID']);
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('expense_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

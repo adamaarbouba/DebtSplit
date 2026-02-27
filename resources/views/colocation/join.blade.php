@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-bold text-2xl text-black dark:text-white leading-tight tracking-tighter">
-            {{ __('Create a Colocation') }}
+            {{ __('Join a Colocation') }}
         </h2>
     </x-slot>
 
@@ -14,27 +14,28 @@
 
                     <div class="mb-8">
                         <h3 class="text-3xl font-black tracking-tighter text-black dark:text-white mb-2">
-                            Set up your new house
+                            Enter Invite Token
                         </h3>
                         <p class="text-[#706f6c] dark:text-[#A1A09A] font-medium">
-                            Create a shared workspace to manage expenses, track debts, and organize with your roommates.
+                            Ask your roommate for the house invite token and paste it below to join their workspace.
                         </p>
                     </div>
 
-                    <form method="POST" action="{{ route('colocation.store') }}" class="space-y-6">
+                    <form method="POST" action="{{ route('colocation.processJoin') }}" class="space-y-6">
                         @csrf
 
                         <div>
-                            <label for="title" class="block text-sm font-bold text-black dark:text-white mb-2">
-                                {{ __('Colocation Name') }}
+                            <label for="token" class="block text-sm font-bold text-black dark:text-white mb-2">
+                                {{ __('Invite Token') }}
                             </label>
-                            <input id="title" type="text" name="title" value="{{ old('title') }}" required
-                                autofocus placeholder="e.g. The Downtown Apartment"
-                                class="block w-full bg-gray-50 dark:bg-[#0a0a0a] border border-[#19140010] dark:border-[#3E3E3A] text-black dark:text-white rounded-xl focus:ring-[#f53003] focus:border-[#f53003] transition-colors py-3 px-4">
-                            @error('title')
+                            <input id="token" type="text" name="token" value="{{ old('token') }}" required
+                                autofocus placeholder="e.g. uxJxFi"
+                                class="block w-full bg-gray-50 dark:bg-[#0a0a0a] border border-[#19140010] dark:border-[#3E3E3A] text-black dark:text-white rounded-xl focus:ring-[#f53003] focus:border-[#f53003] transition-colors py-3 px-4 font-mono tracking-widest text-center uppercase">
+                            @error('token')
                                 <p class="text-[#f53003] text-sm mt-2 font-medium">{{ $message }}</p>
                             @enderror
                         </div>
+
                         <div
                             class="flex flex-col-reverse sm:flex-row items-center justify-end gap-4 mt-8 pt-8 border-t border-[#19140010] dark:border-[#3E3E3A]">
                             <a href="{{ route('dashboard') }}"
@@ -44,7 +45,7 @@
 
                             <button type="submit"
                                 class="w-full sm:w-auto text-center bg-[#f53003] hover:bg-[#d42a02] text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-red-500/20 transition-all hover:scale-105">
-                                {{ __('Create Colocation') }}
+                                {{ __('Join House') }}
                             </button>
                         </div>
 

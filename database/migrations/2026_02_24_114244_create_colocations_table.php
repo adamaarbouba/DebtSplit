@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('colocations', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->enum('status',['cancelled','active']);
+            $table->enum('status', ['cancelled', 'active']);
+            $table->foreignId('owner_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('token');
             $table->timestamps();
         });

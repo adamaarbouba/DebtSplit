@@ -23,6 +23,6 @@ class Colocation_User extends Model
     }
     public function colocation()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Colocation::class);
     }
 }
