@@ -27,10 +27,16 @@
                     </form>
                 @endif
 
-                <button
-                    class="px-5 py-2.5 bg-black dark:bg-white text-white dark:text-black rounded-xl text-xs font-bold transition hover:bg-[#f53003] hover:text-white dark:hover:bg-[#f53003] dark:hover:text-white">
+                {{-- NEW: Button to view the expenses index --}}
+                <a href="{{ route('expense.index') }}"
+                    class="inline-block px-5 py-2.5 bg-white dark:bg-[#161615] border border-[#19140010] dark:border-[#3E3E3A] text-black dark:text-white rounded-xl text-xs font-bold transition hover:bg-gray-50 dark:hover:bg-white/5">
+                    View Expenses
+                </a>
+
+                <a href="{{ route('expense.create', $colocation->id) }}"
+                    class="inline-block px-5 py-2.5 bg-black dark:bg-white text-white dark:text-black rounded-xl text-xs font-bold transition hover:bg-[#f53003] hover:text-white dark:hover:bg-[#f53003] dark:hover:text-white">
                     + Log Expense
-                </button>
+                </a>
             </div>
         </div>
     </x-slot>
@@ -120,6 +126,9 @@
                                                     @if ($roommate->id === $colocation->owner_id)
                                                         <span
                                                             class="text-[9px] font-black text-[#f53003] uppercase tracking-widest mt-0.5">Owner</span>
+                                                    @else
+                                                        <span
+                                                            class="text-[9px] font-black text-[#f53003] uppercase tracking-widest mt-0.5">Member</span>
                                                     @endif
                                                 </div>
                                             </td>

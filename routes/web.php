@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ColocationController;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\ExpenseUserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Redirect;
 use Illuminate\Support\Facades\Route;
@@ -25,5 +27,13 @@ Route::post('/colocations/join', [ColocationController::class, 'processJoin'])->
 Route::get('/colocations/create', [ColocationController::class, 'create'])->name('colocation.create');
 Route::post('/colocations', [ColocationController::class, 'store'])->name('colocation.store');
 Route::patch('/colocations/{id}/cancel', [ColocationController::class, 'cancel'])->name('colocation.cancel');
+
+
+Route::get('/expenses', [ExpenseController::class, 'index'])->name('expense.index');
+Route::get('/colocations/{colocation}/expenses/create', [ExpenseController::class, 'create'])->name('expense.create');
+Route::post('/colocations/{colocation}/expenses', [ExpenseController::class, 'store'])->name('expense.store');
+Route::get('/expenses/{expense}', [ExpenseController::class, 'show'])->name('expense.show');
+Route::patch('/expenses/{expense}/paid', [ExpenseController::class, 'paid'])->name('expense.paid');
+Route::patch('/colocations/{colocation}/expenses/{expense}/paid', [ExpenseUserController::class, 'markAsPaid'])->name('expense.user.paid');
 
 require __DIR__ . '/auth.php';

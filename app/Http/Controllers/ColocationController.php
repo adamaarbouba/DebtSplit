@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\JoinColocationRequest;
+use App\Http\Requests\StoreColocationRequest;
 use App\Models\Colocation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -37,26 +39,29 @@ class ColocationController extends Controller
         return view('colocation.join');
     }
 
-    public function processJoin(Request $request)
+    public function processJoin(JoinColocationRequest $request)
     {
-        $request->validate([
-            'token' => 'required|string',
-        ]);
-        $colocation = Colocation::where('token', $request->token)
+        $validated = $request->validated();
+
+        $colocation = Colocation::where('token', $validated['token'])
             ->where('status', 'active')
             ->first();
+
         if (!$colocation) {
             return back()->withErrors(['token' => 'This colocation does not exist or is no longer active.']);
         }
+
         if ($colocation->users()->where('user_id', auth()->id())->exists()) {
             return back()->withErrors(['token' => 'You are already a member of this colocation.']);
         }
+
         $colocation->users()->attach(auth()->id(), [
             'role' => 'member',
             'joined_at' => now(),
             'sold' => 0,
             'debt' => 0,
         ]);
+
         return redirect()->route('colocation.show', $colocation->id)
             ->with('success', 'Welcome to ' . $colocation->title . '!');
     }
@@ -64,11 +69,9 @@ class ColocationController extends Controller
     //hadi nchangihaaaaaaaaaa mnb3d
 
 
-    public function store(Request $request)
+    public function store(StoreColocationRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-        ]);
+        $validated = $request->validated();
 
         $colocation = Colocation::create([
             'title' => $validated['title'],
@@ -78,6 +81,7 @@ class ColocationController extends Controller
         ]);
 
         $colocation->users()->attach(auth()->id(), [
+            'role' => 'Owner',
             'joined_at' => now(),
             'sold' => 0,
             'debt' => 0,
