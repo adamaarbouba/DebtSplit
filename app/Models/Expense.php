@@ -35,7 +35,7 @@ class Expense extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'expense__users', 'expense_id', 'user_id')
-            ->withPivot('id', 'amount', 'status') // Added 'id' in case we need to target specific pivot rows
+            ->withPivot('id', 'amount', 'status')
             ->withTimestamps();
     }
 }

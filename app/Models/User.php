@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'rep',
         'role_id',
+        'status',
     ];
     /**
      * The attributes that should be hidden for serialization.
@@ -52,7 +53,15 @@ class User extends Authenticatable
     public function colocations()
     {
         return $this->belongsToMany(Colocation::class, 'colocation_user')
-            ->withPivot('role', 'debt', 'sold', 'left_at', 'joined_at');
+            ->withPivot('role', 'debt', 'sold', 'left_at', 'joined_at')
+            ->wherePivotNull('left_at');
+    }
+
+    public function pastColocations()
+    {
+        return $this->belongsToMany(Colocation::class, 'colocation_user')
+            ->withPivot('role', 'debt', 'sold', 'left_at', 'joined_at')
+            ->wherePivotNotNull('left_at');
     }
 
     public function expenses()

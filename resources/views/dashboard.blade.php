@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-bold text-2xl text-black dark:text-white leading-tight tracking-tighter">
+        <h2 class="font-bold text-2xl text-gray-900 dark:text-white leading-tight tracking-tighter">
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
@@ -8,69 +8,79 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
+            {{-- Greeting Card --}}
             <div
-                class="bg-white dark:bg-[#161615] overflow-hidden shadow-sm border border-[#19140010] dark:border-[#3E3E3A] sm:rounded-2xl">
+                class="bg-white dark:bg-[#161615] overflow-hidden shadow-sm border border-gray-200 dark:border-[#3E3E3A] sm:rounded-2xl">
                 <div class="p-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div>
-                        <h3 class="text-lg font-medium text-[#706f6c] dark:text-[#A1A09A]">Good morning,</h3>
-                        <p class="text-3xl font-black tracking-tight text-black dark:text-white">
-                            {{ auth()->user()->name }}</p>
+                    <div class="text-center md:text-left">
+                        <h3 class="text-lg font-medium text-gray-600 dark:text-gray-400">Good morning,</h3>
+                        <p class="text-3xl font-black tracking-tight text-gray-900 dark:text-white">
+                            {{ auth()->user()->name }}
+                        </p>
                     </div>
 
                     <a href="{{ route('colocation.index') }}"
-                        class="px-6 py-3 border border-[#19140015] dark:border-[#3E3E3A] text-black dark:text-white font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition duration-150">
+                        class="w-full md:w-auto text-center px-6 py-3 border border-gray-200 dark:border-[#3E3E3A] text-gray-900 dark:text-white font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition duration-150">
                         {{ __('View History') }}
                     </a>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div
-                    class="md:col-span-2 bg-white dark:bg-[#161615] border border-[#19140010] dark:border-[#3E3E3A] sm:rounded-2xl p-8">
-                    <h4 class="text-xs font-black uppercase tracking-widest text-[#f53003] mb-6">
-                        {{ __('Current Colocation') }}</h4>
+            {{-- Workspace Card --}}
+            <div class="bg-white dark:bg-[#161615] border border-gray-200 dark:border-[#3E3E3A] sm:rounded-2xl p-8">
 
-                    @if ($activeColocation ?? null)
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
-                            <div>
-                                <h2 class="text-4xl font-black tracking-tighter text-black dark:text-white mb-2">
-                                    {{ $activeColocation->title }}
-                                </h2>
-                                <p class="text-[#706f6c] dark:text-[#A1A09A] font-medium">
-                                    Status: <span
-                                        class="text-green-500 uppercase text-xs font-bold px-2 py-0.5 bg-green-50 dark:bg-green-900/20 rounded">Active</span>
-                                </p>
-                            </div>
+                @if ($activeColocation ?? null)
+                    <h4 class="text-xs font-black uppercase tracking-widest text-[#d92602] dark:text-[#f53003] mb-6">
+                        {{ __('Current Colocation') }}
+                    </h4>
 
-                            <a href="{{ route('colocation.show', $activeColocation->id) }}"
-                                class="w-full sm:w-auto text-center bg-[#f53003] hover:bg-[#d42a02] text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-red-500/20 transition-all hover:scale-105">
-                                {{ __('Open Workspace') }}
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                        <div>
+                            <h2 class="text-4xl font-black tracking-tighter text-gray-900 dark:text-white mb-2">
+                                {{ $activeColocation->title }}
+                            </h2>
+                            <p class="text-gray-600 dark:text-gray-400 font-medium">
+                                Status: <span
+                                    class="uppercase text-xs font-bold px-2 py-0.5 bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 rounded">Active</span>
+                            </p>
+                        </div>
+
+                        <a href="{{ route('colocation.show', $activeColocation->id) }}"
+                            class="w-full sm:w-auto text-center bg-[#f53003] hover:bg-[#d42a02] text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-red-500/20 transition-all hover:scale-105">
+                            {{ __('Open Workspace') }}
+                        </a>
+                    </div>
+                @else
+                    <div class="py-12 flex flex-col items-center justify-center text-center">
+                        <div
+                            class="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
+                        </div>
+
+                        <h3 class="text-2xl font-black tracking-tighter text-gray-900 dark:text-white mb-3">
+                            No Active Workspace
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-8 leading-relaxed">
+                            You are not currently active in any house. Create a new colocation or join your roommates
+                            using an invite token to get started.
+                        </p>
+
+                        <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                            <a href="{{ route('colocation.create') }}"
+                                class="w-full sm:w-auto text-center bg-[#f53003] hover:bg-[#d42a02] text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-red-500/20 transition-all hover:scale-105">
+                                Create Colocation
+                            </a>
+                            <a href="{{ route('colocation.join') }}"
+                                class="w-full sm:w-auto text-center bg-gray-100 dark:bg-[#2A2A28] border border-transparent hover:border-gray-200 dark:hover:border-[#3E3E3A] text-gray-900 dark:text-white font-bold py-3 px-8 rounded-xl transition-all">
+                                Join with Token
                             </a>
                         </div>
-                    @else
-                        <div class="py-4">
-                            <p class="text-[#706f6c] dark:text-[#A1A09A] italic">
-                                {{ __('You are not currently active in any house.') }}</p>
-                            <a href="{{ route('colocation.join') }}"
-                                class="text-[#f53003] font-bold underline underline-offset-4 mt-2 inline-block">Join one
-                                now &rarr;</a>
-                        </div>
-                        <div class="py-4">
-                            <a href="{{ route('colocation.create') }}"
-                                class="text-[#f53003] font-bold underline underline-offset-4 mt-2 inline-block">Create
-                                Colocation &rarr;</a>
-                        </div>
-                    @endif
-                </div>
-                <div class="bg-black dark:bg-white p-8 sm:rounded-2xl flex flex-col justify-between">
-                    <div class="text-white dark:text-black">
-                        <p class="text-xs font-bold uppercase tracking-widest opacity-60 mb-1">Quick Tip</p>
-                        <p class="text-lg leading-snug">Keep your receipts updated to avoid house friction.</p>
                     </div>
-                    <div class="mt-8">
-                        <div class="w-12 h-1 bg-[#f53003]"></div>
-                    </div>
-                </div>
+                @endif
             </div>
 
         </div>

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\JoinColocationRequest;
+use App\Http\Requests\LeaveColocationRequest;
 use App\Http\Requests\StoreColocationRequest;
 use App\Models\Colocation;
-use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class ColocationController extends Controller
@@ -66,9 +68,6 @@ class ColocationController extends Controller
             ->with('success', 'Welcome to ' . $colocation->title . '!');
     }
 
-    //hadi nchangihaaaaaaaaaa mnb3d
-
-
     public function store(StoreColocationRequest $request)
     {
         $validated = $request->validated();
@@ -102,5 +101,137 @@ class ColocationController extends Controller
         ]);
 
         return redirect()->route('dashboard')->with('success', 'Colocation has been cancelled.');
+    }
+    public function leave(LeaveColocationRequest $request, Colocation $colocation)
+    {
+        $user = auth()->user();
+
+        $pivot = DB::table('colocation_user')
+            ->where('colocation_id', $colocation->id)
+            ->where('user_id', $user->id)
+            ->whereNull('left_at')
+            ->first();
+
+        if (!$pivot) {
+            return back()->withErrors(['error' => 'You are not active in this colocation.']);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            if ($pivot->debt > 0) {
+                $user->decrement('rep');
+
+                $remainingUsers = DB::table('colocation_user')
+                    ->where('colocation_id', $colocation->id)
+                    ->where('user_id', '!=', $user->id)
+                    ->whereNull('left_at')
+                    ->get();
+
+                if ($remainingUsers->count() > 0) {
+                    $splitAmount = round($pivot->debt / $remainingUsers->count(), 2);
+
+                    foreach ($remainingUsers as $remainingUser) {
+                        DB::table('colocation_user')
+                            ->where('colocation_id', $colocation->id)
+                            ->where('user_id', $remainingUser->user_id)
+                            ->increment('debt', $splitAmount);
+                    }
+                }
+            }
+
+            DB::table('colocation_user')
+                ->where('colocation_id', $colocation->id)
+                ->where('user_id', $user->id)
+                ->update([
+                    'left_at' => now(),
+                    'debt' => 0
+                ]);
+
+            $activeRoommates = DB::table('colocation_user')
+                ->where('colocation_id', $colocation->id)
+                ->whereNull('left_at')
+                ->get();
+
+            if ($activeRoommates->isEmpty()) {
+                $colocation->update(['status' => 'cancelled']);
+            } else {
+                if ($colocation->owner_id === $user->id) {
+                    $newOwner = $activeRoommates->first();
+
+                    $colocation->update(['owner_id' => $newOwner->user_id]);
+
+                    DB::table('colocation_user')
+                        ->where('colocation_id', $colocation->id)
+                        ->where('user_id', $newOwner->user_id)
+                        ->update(['role' => 'Owner']);
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('dashboard')->with('success', 'You have successfully left the house.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Could not leave: ' . $e->getMessage()]);
+        }
+    }
+
+
+    public function kick(Colocation $colocation, User $user)
+    {
+        if ($colocation->owner_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        if ($user->id === auth()->id()) {
+            return back()->withErrors(['error' => 'You cannot kick yourself. Please use the Leave button.']);
+        }
+
+        $pivot = DB::table('colocation_user')
+            ->where('colocation_id', $colocation->id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$pivot) {
+            return back()->withErrors(['error' => 'User is not in this colocation.']);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            if ($pivot->debt > 0) {
+                DB::table('colocation_user')
+                    ->where('colocation_id', $colocation->id)
+                    ->where('user_id', auth()->id())
+                    ->increment('debt', $pivot->debt);
+            }
+
+            DB::table('colocation_user')
+                ->where('colocation_id', $colocation->id)
+                ->where('user_id', $user->id)
+                ->update([
+                    'left_at' => now(),
+                    'debt' => 0
+                ]);
+
+            DB::commit();
+            return back()->with('success', $user->name . ' has been kicked from the house.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Could not kick user: ' . $e->getMessage()]);
+        }
+    }
+
+    public function refreshToken(Colocation $colocation)
+    {
+        if ($colocation->owner_id !== auth()->id()) {
+            exit();
+        }
+
+        $colocation->update([
+            'token' => Str::random(10)
+        ]);
+
+        return back()->with('success', 'New invite token generated successfully!');
     }
 }

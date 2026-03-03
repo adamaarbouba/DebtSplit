@@ -24,6 +24,13 @@
                         class="text-sm font-bold uppercase tracking-widest !text-black dark:!text-white border-b-2 border-transparent data-[active=true]:border-[#f53003]">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    @if (Auth::user()->role_id === 1)
+                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')"
+                            class="text-sm font-bold uppercase tracking-widest !text-[#f53003] border-b-2 border-transparent data-[active=true]:border-[#f53003]">
+                            {{ __('Admin Panel') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -84,10 +91,18 @@
             <x-responsive-nav-link href="/" :active="request()->is('/')" class="font-bold uppercase tracking-widest text-xs">
                 {{ __('Home') }}
             </x-responsive-nav-link>
+
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
                 class="font-bold uppercase tracking-widest text-xs">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            @if (Auth::user()->role_id === 1)
+                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')"
+                    class="font-bold uppercase tracking-widest text-xs text-[#f53003]">
+                    {{ __('Admin Panel') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-[#3E3E3A]">

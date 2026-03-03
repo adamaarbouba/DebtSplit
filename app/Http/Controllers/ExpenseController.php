@@ -2,39 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateExpenseRequest;
+use App\Http\Requests\IndexExpenseRequest;
+use App\Http\Requests\ShowExpenseRequest;
+use App\Http\Requests\StoreExpenseRequest;
 use App\Models\Colocation;
 use App\Models\Expense;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ExpenseController extends Controller
 {
-    public function index()
+    public function index(IndexExpenseRequest $request)
     {
         $expenses = auth()->user()->expenses()->with('category')->latest()->get();
 
         return view('expense.index', compact('expenses'));
     }
 
-    public function create(Colocation $colocation)
+    public function create(CreateExpenseRequest $request, Colocation $colocation)
     {
-        if (!$colocation->users()->where('user_id', auth()->id())->exists()) {
-            abort(403, 'You are not a member of this colocation.');
-        }
-
         $colocation->load(['categories', 'users']);
 
         return view('expense.create', compact('colocation'));
     }
 
-    public function store(Request $request, Colocation $colocation)
+    public function store(StoreExpenseRequest $request, Colocation $colocation)
     {
-        $validated = $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'total_payment' => 'required|numeric|min:0.01',
-            'split_with' => 'required|array',
-            'split_with.*' => 'exists:users,id'
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
 
@@ -51,7 +45,6 @@ class ExpenseController extends Controller
             $amountPerPerson = round($validated['total_payment'] / $numberOfPeople, 2);
 
             foreach ($validated['split_with'] as $userId) {
-
                 $expense->users()->attach($userId, [
                     'amount' => $amountPerPerson,
                     'status' => 'UNPAID'
@@ -82,7 +75,7 @@ class ExpenseController extends Controller
         }
     }
 
-    public function show(Expense $expense)
+    public function show(ShowExpenseRequest $request, Expense $expense)
     {
         $expense->load(['users', 'category', 'creator', 'payer']);
 

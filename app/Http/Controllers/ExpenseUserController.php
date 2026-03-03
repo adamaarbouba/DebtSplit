@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MarkAsPaidExpenseUserRequest;
 use App\Models\Colocation;
 use App\Models\Expense;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ExpenseUserController extends Controller
 {
-
-    public function markAsPaid(Request $request, Colocation $colocation, Expense $expense)
+    public function markAsPaid(MarkAsPaidExpenseUserRequest $request, Colocation $colocation, Expense $expense)
     {
         DB::beginTransaction();
 

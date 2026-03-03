@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-bold text-2xl text-black dark:text-white leading-tight tracking-tighter">
+        <h2 class="font-bold text-2xl text-gray-900 dark:text-white leading-tight tracking-tighter">
             {{ __('Join a Colocation') }}
         </h2>
     </x-slot>
@@ -9,14 +9,14 @@
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
 
             <div
-                class="bg-white dark:bg-[#161615] overflow-hidden shadow-sm border border-[#19140010] dark:border-[#3E3E3A] sm:rounded-2xl">
+                class="bg-white dark:bg-[#161615] overflow-hidden shadow-sm border border-gray-200 dark:border-[#3E3E3A] sm:rounded-2xl">
                 <div class="p-8 sm:p-12">
 
                     <div class="mb-8">
-                        <h3 class="text-3xl font-black tracking-tighter text-black dark:text-white mb-2">
+                        <h3 class="text-3xl font-black tracking-tighter text-gray-900 dark:text-white mb-2">
                             Enter Invite Token
                         </h3>
-                        <p class="text-[#706f6c] dark:text-[#A1A09A] font-medium">
+                        <p class="text-gray-600 dark:text-gray-300 font-medium">
                             Ask your roommate for the house invite token and paste it below to join their workspace.
                         </p>
                     </div>
@@ -25,21 +25,22 @@
                         @csrf
 
                         <div>
-                            <label for="token" class="block text-sm font-bold text-black dark:text-white mb-2">
+                            <label for="token" class="block text-sm font-bold text-gray-900 dark:text-white mb-2">
                                 {{ __('Invite Token') }}
                             </label>
                             <input id="token" type="text" name="token" value="{{ old('token') }}" required
                                 autofocus placeholder="e.g. uxJxFi"
-                                class="block w-full bg-gray-50 dark:bg-[#0a0a0a] border border-[#19140010] dark:border-[#3E3E3A] text-black dark:text-white rounded-xl focus:ring-[#f53003] focus:border-[#f53003] transition-colors py-3 px-4 font-mono tracking-widest text-center uppercase">
+                                class="block w-full bg-gray-50 dark:bg-[#0a0a0a] border border-gray-200 dark:border-[#3E3E3A] text-gray-900 dark:text-white rounded-xl focus:ring-[#f53003] focus:border-[#f53003] transition-colors py-3 px-4 font-mono tracking-widest text-center uppercase">
+
                             @error('token')
-                                <p class="text-[#f53003] text-sm mt-2 font-medium">{{ $message }}</p>
+                                <p class="text-red-600 dark:text-red-400 text-sm mt-2 font-medium">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div
-                            class="flex flex-col-reverse sm:flex-row items-center justify-end gap-4 mt-8 pt-8 border-t border-[#19140010] dark:border-[#3E3E3A]">
+                            class="flex flex-col-reverse sm:flex-row items-center justify-end gap-4 mt-8 pt-8 border-t border-gray-100 dark:border-[#3E3E3A]">
                             <a href="{{ route('dashboard') }}"
-                                class="w-full sm:w-auto text-center px-6 py-3 text-[#706f6c] dark:text-[#A1A09A] hover:text-black dark:hover:text-white font-bold transition-colors">
+                                class="w-full sm:w-auto text-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-bold transition-colors">
                                 {{ __('Cancel') }}
                             </a>
 
