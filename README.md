@@ -10,7 +10,7 @@ DebtSplit gives every roommate a clear dashboard to see who owes what, across mu
 
 ### 🏘️ Multiple Houses
 - Join and manage multiple colocations  
-  (e.g., your main apartment and a summer house)
+  (only one active at a time)
 
 ### 💰 Debt Tracking
 - Instantly see:
@@ -40,7 +40,6 @@ Each house includes:
 | Laravel 11   | Backend logic & architecture |
 | Tailwind CSS | Modern and responsive UI     |
 | MySQL        | Relational database          |
-| Eloquent ORM | Many-to-Many relationships   |
 
 ---
 
@@ -85,8 +84,3 @@ DebtSplit focuses on:
 - Mobile optimization  
 - API support  
 
----
-
-## 📌 Status
-
-Currently in development
